@@ -44,15 +44,22 @@ const removeUnsafeStep = (report: number[], unsafeStep: number): number[] => {
 };
 
 export const evaluateLooseSafety = (report: number[]): SafetyReport => {
-  const { safe, unsafeStep } = evaluateSafety(report);
-  if(!safe) {
-    const newReport = removeUnsafeStep(report, unsafeStep);
-    return evaluateSafety(newReport);
+  const firstSafetyReport = evaluateSafety(report);
+  if(!firstSafetyReport.safe) {
+    const secondReport = removeUnsafeStep(report, firstSafetyReport.unsafeStep);
+    const secondSafetyReport = evaluateSafety(secondReport);
+    if(!secondSafetyReport.safe) {
+      const thirdReport = removeUnsafeStep(report, firstSafetyReport.unsafeStep + 1);
+      const thirdSafetyReport = evaluateSafety(thirdReport);
+      if(!thirdSafetyReport.safe) {
+        const forthReport = removeUnsafeStep(report, firstSafetyReport.unsafeStep - 1);
+        return evaluateSafety(forthReport);
+      }
+      return thirdSafetyReport;
+    }
+    return secondSafetyReport;
   }
-  return {
-    safe,
-    unsafeStep
-  };
+  return firstSafetyReport;
 };
 
 const safeReports = async (): Promise<number> => {
