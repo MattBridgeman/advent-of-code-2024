@@ -32,6 +32,12 @@ export const searchHorizonal = (word: string) => (wordsearch: Array<Array<string
   return occurences;
 };
 
+export const searchVertical = (word: string) => (wordsearch: Array<Array<string>>): number => {
+  let verticalToHorizontalArray = rotateArray90Degrees(wordsearch);
+  let occurences = searchHorizonal(word)(verticalToHorizontalArray);
+  return occurences;
+};
+
 //12345
 //67890
 
@@ -41,16 +47,18 @@ export const searchHorizonal = (word: string) => (wordsearch: Array<Array<string
 //94
 //05
 
-// export const rotateArray90Degrees = (wordsearch: string[]) => {
-//   let firstRow = wordsearch[0];
-//   let rotatedArray: Array<Array<string>> = [];
-//   for(let y = 0; y < wordsearch.length; y++) {
-//     rotatedArray.push([] as string[]);
-//     for(let x = 0; x < firstRow.length; x++) {
-//       rotatedArray[y].push(x);
-//     }
-//   }
-// };
+export const rotateArray90Degrees = (wordsearch: Array<Array<string>>): Array<Array<string>> => {
+  let firstRow = wordsearch[0];
+  let rotatedArray: Array<Array<string>> = [];
+  for(let y = 0; y < wordsearch.length; y++) {
+    rotatedArray.push([]);
+    for(let x = 0; x < firstRow.length; x++) {
+      let inverseY = wordsearch.length - y;
+      rotatedArray[inverseY].push(wordsearch[x][y]);
+    }
+  }
+  return rotatedArray;
+};
 
 export const searchForWordInstances = (word: string) => (wordsearch: string) => {
   return 0;
