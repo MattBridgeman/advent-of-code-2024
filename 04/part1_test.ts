@@ -1,5 +1,5 @@
 import { assertEquals } from "@std/assert";
-import { searchForWordInstances, searchHorizonal, stringToRows } from "./part1.ts";
+import { searchForWordInstances, searchHorizonal, stringTo2dArray } from "./part1.ts";
 
 export const getFixture = async (name: string) => {
   const fixture = await Deno.readTextFile(`./fixtures/${name}.txt`);
@@ -13,7 +13,7 @@ export const getFixture = async (name: string) => {
 
 Deno.test("Wordsearch finds 5 xmas horizontally", async () => {
   const wordsearch = await getFixture("input");
-  const numberOfInstances = searchHorizonal("XMAS")(stringToRows(wordsearch));
+  const numberOfInstances = searchHorizonal("XMAS")(stringTo2dArray(wordsearch));
   assertEquals(numberOfInstances, 5);
 });
 
