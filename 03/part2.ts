@@ -1,18 +1,20 @@
 import { getProgram } from "./fileHelper.ts";
 
-const extractProgram = (program: string): string => {
-  const dontStatements = program.split("don't()");
+export const extractProgram = (program: string, run:number = 0): string => {
+  let dontStatements = program.split("don't()");
+  // const pairs = dontStatements.map((statement, index) => {
+  //   if(index % 2 === 0) {
+  //     return [statement, dontStatements[index + 1]];
+  //   }
+  // });
+  if(run === 0) {
+    dontStatements = dontStatements.slice(1);
+  }
   const doStatements = dontStatements.map(statement => {
-    const doStatement = statement.split("do()");
-    if(doStatement.length === 1) {
-      return '';
-    }
-    if(doStatement.length === 2) {
-      return doStatement[1];
-    }
-    return extractProgram(doStatement.slice(1).join(""));
+    return statement.split("do()")[1];
+    // return extractProgram(doStatement.slice(1).join(""));
   });
-  return doStatements.join("");
+  return run === 0 ? dontStatements[0] : '' + doStatements.join("");
 };
 
 const sumOfMultiplications = async () => {
