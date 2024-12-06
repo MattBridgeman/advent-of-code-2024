@@ -8,7 +8,7 @@ type SafetyReport = {
   unsafeStep: number;
 }
 
-const evaluateSafety = (report: number[]): SafetyReport => {
+export const evaluateSafety = (report: number[]): SafetyReport => {
   let increasing = false;
   let decreasing = false;
   let safe = true;
@@ -41,20 +41,27 @@ const evaluateSafety = (report: number[]): SafetyReport => {
 const removeUnsafeStep = (report: number[], unsafeStep: number): number[] => {
   const newReport = report.filter((_, index) => index !== unsafeStep);
   return newReport;
-}
+};
+
+export const evaluateLooseSafety = (report: number[]): SafetyReport => {
+  const { safe, unsafeStep } = evaluateSafety(report);
+  if(!safe) {
+    const newReport = removeUnsafeStep(report, unsafeStep);
+    return evaluateSafety(newReport);
+  }
+  return {
+    safe,
+    unsafeStep
+  };
+};
 
 const safeReports = async (): Promise<number> => {
     const reports = await getReports();
     const safeReportList = reports.map(report => {
-      const { safe, unsafeStep } = evaluateSafety(report);
-      if(!safe) {
-        const newReport = removeUnsafeStep(report, unsafeStep);
-        const { safe: newSafe } = evaluateSafety(newReport);
-        return newSafe ? 1 : 0;
-      }
+      const { safe } = evaluateLooseSafety(report);
       return safe ? 1 : 0;
     });
-    const sum = safeReportList.reduce((a, b) => a + b, 0);
+    const sum = safeReportList.reduce((a: number, b: number) => a + b, 0);
     return sum;
 };
 
